@@ -28,7 +28,7 @@ use libc::c_int;
 hook! {
 
     unsafe fn exit(status: c_int) -> c_int => memmon_exit {
-        42
+        real!(exit)(42)
     }
 
 }
