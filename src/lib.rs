@@ -39,10 +39,12 @@ hook! {
             .done()
             .build();
 
-        print!("My PID was {}", process::id());
+        println!("My PID was {}", process::id());
 
         let mc : &MemController = cgroup.controller_of().expect("No memory controller found");
         let mem = mc.memory_stat();
+
+        cgroup.tasks().iter().for_each(|t| println!("Task found in cgroup swith pid {}", t.pid));
 
         println!("Max mem usage: {}", mem.max_usage_in_bytes);
 
