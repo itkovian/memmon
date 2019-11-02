@@ -20,7 +20,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#[macro_use]
+extern crate redhook;
 
+use libc::c_int;
+
+hook! {
+
+    unsafe fn exit(status: c_int) -> c_int => memmon_exit {
+        42
+    }
+
+}
 
 #[cfg(test)]
 mod tests {
