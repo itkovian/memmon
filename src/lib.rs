@@ -23,17 +23,25 @@ SOFTWARE.
 #[macro_use]
 extern crate redhook;
 
-use libc::c_int;
-use cgroups::Hierarchy;
+//use cgroups::Hierarchy;
+use cgroups::cgroup::Cgroup;
+use cgroups::cgroup_builder::CgroupBuilder;
 use cgroups::memory::MemController;
+use libc::c_int;
+use std::process;
 
 hook! {
 
     unsafe fn exit(status: c_int) -> c_int => memmon_exit {
         let hier = cgroups::hierarchies::V1::new();
-        let cg = hier.root_control_group();
+        let cgroup: Cgroup = CgroupBuilder::new("memmon", &hier)
+            .memory()
+            .done()
+            .build();
 
-        let mc : &MemController = cg.controller_of().expect("No memory controller found");
+        print!("My PID was {}", process::id());
+
+        let mc : &MemController = cgroup.controller_of().expect("No memory controller found");
         let mem = mc.memory_stat();
 
         println!("Max mem usage: {}", mem.max_usage_in_bytes);
