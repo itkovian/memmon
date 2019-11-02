@@ -24,6 +24,7 @@ SOFTWARE.
 extern crate redhook;
 
 //use cgroups::Hierarchy;
+use cgroups::{CgroupPid, Controller};
 use cgroups::cgroup::Cgroup;
 use cgroups::cgroup_builder::CgroupBuilder;
 use cgroups::memory::MemController;
@@ -39,13 +40,15 @@ hook! {
             .done()
             .build();
 
-        println!("My PID was {}", process::id());
+        let pid = CgroupPid { pid: process::id() as u64 };
+        println!("My PID was {}", pid.pid);
 
         let mc : &MemController = cgroup.controller_of().expect("No memory controller found");
-        let mem = mc.memory_stat();
+        mc.add_task(&pid).unwrap();
 
         cgroup.tasks().iter().for_each(|t| println!("Task found in cgroup swith pid {}", t.pid));
 
+        let mem = mc.memory_stat();
         println!("Max mem usage: {}", mem.max_usage_in_bytes);
 
         real!(exit)(status)
