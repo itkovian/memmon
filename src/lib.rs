@@ -24,11 +24,21 @@ SOFTWARE.
 extern crate redhook;
 
 use libc::c_int;
+use cgroups::Hierarchy;
+use cgroups::memory::MemController;
 
 hook! {
 
     unsafe fn exit(status: c_int) -> c_int => memmon_exit {
-        real!(exit)(42)
+        let hier = cgroups::hierarchies::V1::new();
+        let cg = hier.root_control_group();
+
+        let mc : &MemController = cg.controller_of().expect("No memory controller found");
+        let mem = mc.memory_stat();
+
+        println!("Max mem usage: {}", mem.max_usage_in_bytes);
+
+        real!(exit)(status)
     }
 
 }
