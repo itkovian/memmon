@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 redhook = "~1.0"
 libc = "~0.2"
-cgroups = "0.1.0"
+procinfo = "0.4.2"
 
 [lib]
 name = "memmon"
