@@ -1,4 +1,4 @@
-name: sarchive tests
+name: memmon tests
 on: [push, pull_request]
 jobs:
   clippy:
