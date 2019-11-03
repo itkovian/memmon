@@ -60,9 +60,6 @@ jobs:
           - beta
           - nightly
           - 1.34.2
-        features:
-          - --features elasticsearch-7
-          - --no-default-features
       fail-fast: false
 
     steps:

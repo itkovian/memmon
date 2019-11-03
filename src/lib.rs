@@ -23,35 +23,20 @@ SOFTWARE.
 #[macro_use]
 extern crate redhook;
 
-//use cgroups::Hierarchy;
-use cgroups::{CgroupPid, Controller};
-use cgroups::cgroup::Cgroup;
-use cgroups::cgroup_builder::CgroupBuilder;
-use cgroups::memory::MemController;
-use libc::c_int;
-use std::process;
+use libc::{c_int, getpid, pid_t};
+use procinfo::pid::status;
 
 hook! {
 
-    unsafe fn exit(status: c_int) -> c_int => memmon_exit {
-        let hier = cgroups::hierarchies::V1::new();
-        let cgroup: Cgroup = CgroupBuilder::new("memmon", &hier)
-            .memory()
-            .done()
-            .build();
+    unsafe fn exit(exit_status: c_int) -> c_int => memmon_exit {
 
-        let pid = CgroupPid { pid: process::id() as u64 };
-        println!("My PID was {}", pid.pid);
+        let pid: pid_t = getpid();
+        let proc_stat = status(pid).unwrap();
 
-        let mc : &MemController = cgroup.controller_of().expect("No memory controller found");
-        mc.add_task(&pid).unwrap();
+        println!("My PID was {}", pid);
+        println!("Mem usage stats: {:?}", proc_stat);
 
-        cgroup.tasks().iter().for_each(|t| println!("Task found in cgroup swith pid {}", t.pid));
-
-        let mem = mc.memory_stat();
-        println!("Max mem usage: {}", mem.max_usage_in_bytes);
-
-        real!(exit)(status)
+        real!(exit)(exit_status)
     }
 
 }
