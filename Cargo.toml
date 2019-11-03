@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 redhook = "~1.0"
 libc = "~0.2"
-procinfo = { git = "https://github.com/itkovian/procinfo-rs", rev = "6f3dfbf13" }
+procinfo = { git = "https://github.com/itkovian/procinfo-rs", rev = "ffcde44" }
 
 [lib]
 name = "memmon"
