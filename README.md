@@ -23,3 +23,7 @@ This crate aims to provide a monitoring service for memory usage of applications
 
 - cargo build --release
 - export LD_PRELOAD=$PWD/target/release/libmemmon.so
+
+# Caveats
+
+- Cannot be published to crates.io, since relies on a fix for procinfo-rs so it builds on MacOS
