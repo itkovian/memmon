@@ -23,7 +23,7 @@ SOFTWARE.
 #[macro_use]
 extern crate redhook;
 
-use libc::{c_int, pid_t, getpid};
+use libc::{c_int, getpid, pid_t};
 use procinfo::pid::status;
 
 hook! {
